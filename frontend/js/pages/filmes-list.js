@@ -15,11 +15,11 @@ function classifyFilmes(filmes) {
   const alpha = (a, b) => a.titulo.localeCompare(b.titulo);
   watchlist.sort(alpha);
   sem_categoria.sort(alpha);
-  assistidos.sort((a, b) => {
-    if (a.ultimo_assistido && b.ultimo_assistido)
-      return b.ultimo_assistido.localeCompare(a.ultimo_assistido);
-    return a.titulo.localeCompare(b.titulo);
-  });
+  const watchedTime = f => {
+    const s = f.ultimo_assistido || f.ultimo_logado;
+    return s ? new Date(s).getTime() : 0;
+  };
+  assistidos.sort((a, b) => watchedTime(b) - watchedTime(a) || a.titulo.localeCompare(b.titulo));
   return { watchlist, sem_categoria, assistidos };
 }
 

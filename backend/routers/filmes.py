@@ -121,7 +121,8 @@ def list_filmes():
                 SELECT f.*,
                     EXISTS(SELECT 1 FROM diario d WHERE d.filme_id = f.id) AS assistido,
                     EXISTS(SELECT 1 FROM watchlist w WHERE w.filme_id = f.id) AS na_watchlist,
-                    (SELECT MAX(d.assistido_em) FROM diario d WHERE d.filme_id = f.id) AS ultimo_assistido
+                    (SELECT MAX(d.assistido_em) FROM diario d WHERE d.filme_id = f.id) AS ultimo_assistido,
+                    (SELECT MAX(d.created_at) FROM diario d WHERE d.filme_id = f.id) AS ultimo_logado
                 FROM filme f
                 ORDER BY f.titulo
             """)
