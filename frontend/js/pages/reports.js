@@ -116,7 +116,7 @@ async function renderReportDetail(periodType, params) {
           <div class="section-title">Filmes</div>
           <div class="series-grid" style="margin-bottom:32px">
             ${data.top_filmes.map(f => `
-              <div class="series-card" onclick="openFilmeDetail(${f.filme_id})" style="cursor:pointer">
+              <div class="series-card" onclick="openFilmeDetail('${f.filme_id}')" style="cursor:pointer">
                 <div class="series-poster">
                   ${f.poster_path
                     ? `<img src="${posterPathUrl(f.poster_path)}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=series-poster-placeholder>🎬</div>'">`

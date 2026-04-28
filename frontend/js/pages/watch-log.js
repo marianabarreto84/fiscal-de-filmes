@@ -80,7 +80,7 @@ async function searchFilmeWL() {
 
   el.innerHTML = `<div class="search-results">
     ${matches.map(f => `
-      <div class="search-result-item" onclick="selectFilmeWL(${f.id}, '${f.titulo.replace(/'/g,"\\'")}')">
+      <div class="search-result-item" onclick="selectFilmeWL('${f.id}', '${f.titulo.replace(/'/g,"\\'")}')">
         ${f.poster_path
           ? `<img src="${posterPathUrl(f.poster_path)}" class="search-result-poster" onerror="this.style.display='none'">`
           : `<div class="search-result-poster" style="display:flex;align-items:center;justify-content:center;color:var(--text3)">🎬</div>`

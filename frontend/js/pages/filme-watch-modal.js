@@ -36,7 +36,7 @@ async function openFilmeWatchModal(filmeId) {
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="modal.hide()">Cancelar</button>
-      <button class="btn btn-primary" onclick="submitWatchFilme(${filmeId})" data-label="Marcar assistido">Marcar assistido</button>
+      <button class="btn btn-primary" onclick="submitWatchFilme('${filmeId}')" data-label="Marcar assistido">Marcar assistido</button>
     </div>
   `);
 }

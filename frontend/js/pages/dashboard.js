@@ -62,7 +62,7 @@ async function renderDashboard() {
               ? '<div class="text-muted" style="font-size:13px">Nenhum filme marcado ainda.</div>'
               : `<div class="recent-list">
                 ${recent.map(r => `
-                  <div class="recent-item" onclick="openFilmeDetail(${r.filme_id})" style="cursor:pointer">
+                  <div class="recent-item" onclick="openFilmeDetail('${r.filme_id}')" style="cursor:pointer">
                     ${r.poster_path
                       ? `<img src="${posterPathUrl(r.poster_path)}" class="recent-poster" onerror="this.style.display='none'">`
                       : `<div class="recent-poster" style="display:flex;align-items:center;justify-content:center;color:var(--text3)">🎬</div>`

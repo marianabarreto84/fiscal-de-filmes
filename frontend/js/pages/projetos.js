@@ -31,7 +31,7 @@ function projetoCardHtml(p) {
   const watched  = p.filmes_assistidos || 0;
   const progress = pct(watched, total);
   return `
-    <div class="project-card" style="--project-color:${p.cor}" onclick="openProjetoDetail(${p.id})">
+    <div class="project-card" style="--project-color:${p.cor}" onclick="openProjetoDetail('${p.id}')">
       <div class="project-name">${p.titulo}</div>
       ${p.descricao ? `<div class="project-desc">${p.descricao}</div>` : ''}
       <div class="project-type-badge">🎬 Filmes · ${total} filme${total !== 1 ? 's' : ''}</div>
@@ -112,8 +112,8 @@ async function openProjetoDetail(projetoId) {
             ${p.descricao ? `<div style="font-size:13px;color:var(--text3);margin-top:6px">${p.descricao}</div>` : ''}
           </div>
           <div style="display:flex;gap:8px">
-            <button class="btn btn-secondary btn-sm" onclick="openEditProjetoModal(${p.id}, '${p.titulo.replace(/'/g,"\\'")}', ${JSON.stringify(p.descricao || '')}, '${p.cor}')">Editar</button>
-            <button class="btn btn-danger btn-sm" onclick="confirmDeleteProjeto(${p.id}, '${p.titulo.replace(/'/g,"\\'")}')">Excluir</button>
+            <button class="btn btn-secondary btn-sm" onclick="openEditProjetoModal('${p.id}', '${p.titulo.replace(/'/g,"\\'")}', ${JSON.stringify(p.descricao || '')}, '${p.cor}')">Editar</button>
+            <button class="btn btn-danger btn-sm" onclick="confirmDeleteProjeto('${p.id}', '${p.titulo.replace(/'/g,"\\'")}')">Excluir</button>
           </div>
         </div>
         <div class="project-big-progress">
@@ -127,7 +127,7 @@ async function openProjetoDetail(projetoId) {
       <div class="page-body">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
           <div class="section-title" style="margin-bottom:0">Filmes</div>
-          <button class="btn btn-secondary btn-sm" onclick="openAddFilmesToProjetoModal(${p.id})">
+          <button class="btn btn-secondary btn-sm" onclick="openAddFilmesToProjetoModal('${p.id}')">
             <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
             Adicionar filmes
           </button>
@@ -150,7 +150,7 @@ function projetoFilmeCardHtml(projetoId, f) {
   const imgSrc = f.poster_path ? posterPathUrl(f.poster_path) : null;
   return `
     <div class="series-card">
-      <div class="series-poster" onclick="openFilmeDetail(${f.id})" style="cursor:pointer">
+      <div class="series-poster" onclick="openFilmeDetail('${f.id}')" style="cursor:pointer">
         ${imgSrc
           ? `<img src="${imgSrc}" alt="${f.titulo}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=series-poster-placeholder>🎬</div>'">`
           : `<div class="series-poster-placeholder">🎬</div>`
@@ -162,7 +162,7 @@ function projetoFilmeCardHtml(projetoId, f) {
         <div class="series-meta" style="display:flex;align-items:center;justify-content:space-between">
           ${f.ano || ''}
           <button class="btn-icon" style="padding:2px;opacity:0.4" title="Remover do projeto"
-            onclick="event.stopPropagation();removeFilmeFromProjeto(${projetoId}, ${f.id}, this)">
+            onclick="event.stopPropagation();removeFilmeFromProjeto('${projetoId}', '${f.id}', this)">
             <svg viewBox="0 0 24 24" style="width:12px;height:12px;fill:currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
           </button>
         </div>
@@ -199,7 +199,7 @@ async function openAddFilmesToProjetoModal(projetoId) {
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="modal.hide()">Fechar</button>
-      <button class="btn btn-primary" onclick="addSelectedFilmesProjeto(${projetoId})" data-label="Adicionar">Adicionar selecionados</button>
+      <button class="btn btn-primary" onclick="addSelectedFilmesProjeto('${projetoId}')" data-label="Adicionar">Adicionar selecionados</button>
     </div>
   `);
   setTimeout(() => {
@@ -230,7 +230,7 @@ function renderFilmesListProjeto(filmes) {
 async function addSelectedFilmesProjeto(projetoId) {
   const checked = [...document.querySelectorAll('#proj-filmes-list input[type=checkbox]:checked')];
   if (!checked.length) { toast('Selecione ao menos um filme.', 'error'); return; }
-  const ids = checked.map(c => parseInt(c.dataset.filmeId));
+  const ids = checked.map(c => c.dataset.filmeId);
   try {
     await api.addFilmesToProjeto(projetoId, ids);
     toast(`${ids.length} filme${ids.length > 1 ? 's' : ''} adicionado${ids.length > 1 ? 's' : ''}!`);
@@ -263,7 +263,7 @@ function openEditProjetoModal(id, titulo, descricao, cor) {
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="modal.hide()">Cancelar</button>
-      <button class="btn btn-primary" onclick="updateProjeto(${id})" data-label="Salvar">Salvar</button>
+      <button class="btn btn-primary" onclick="updateProjeto('${id}')" data-label="Salvar">Salvar</button>
     </div>
   `);
 }
@@ -294,7 +294,7 @@ function confirmDeleteProjeto(id, titulo) {
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="modal.hide()">Cancelar</button>
-      <button class="btn btn-danger" onclick="deleteProjeto(${id})">Excluir</button>
+      <button class="btn btn-danger" onclick="deleteProjeto('${id}')">Excluir</button>
     </div>
   `);
 }

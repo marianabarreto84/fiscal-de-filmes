@@ -56,7 +56,7 @@ async function openFilmeModal(filmeId) {
                       ${d.plataforma_nome ? `<span style="font-size:10px;color:var(--text3);margin-left:6px">${d.plataforma_nome}</span>` : ''}
                     </div>
                     <button class="btn-icon" style="opacity:0.4" title="Remover entrada"
-                      onclick="removerEntradaDiarioModal(${filmeId}, ${d.id})">
+                      onclick="removerEntradaDiarioModal('${filmeId}', '${d.id}')">
                       <svg viewBox="0 0 24 24" style="width:12px;height:12px;fill:currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
                     </button>
                   </div>
@@ -67,16 +67,16 @@ async function openFilmeModal(filmeId) {
         }
       </div>
       <div class="modal-footer" style="justify-content:space-between">
-        <button class="btn btn-danger btn-sm" onclick="confirmDeleteFilme(${f.id}, '${f.titulo.replace(/'/g, "\\'")}')">Remover</button>
+        <button class="btn btn-danger btn-sm" onclick="confirmDeleteFilme('${f.id}', '${f.titulo.replace(/'/g, "\\'")}')">Remover</button>
         <div style="display:flex;gap:8px">
           ${f.assistido
-            ? `<button class="btn btn-secondary btn-sm" onclick="desmarcarAssistidoModal(${f.id})">Desmarcar</button>`
+            ? `<button class="btn btn-secondary btn-sm" onclick="desmarcarAssistidoModal('${f.id}')">Desmarcar</button>`
             : (f.na_watchlist
-                ? `<button class="btn btn-ghost btn-sm" onclick="removeWatchlistModal(${f.id})">Tirar da lista</button>`
-                : `<button class="btn btn-ghost btn-sm" onclick="addWatchlistModal(${f.id})">+ Quero assistir</button>`
+                ? `<button class="btn btn-ghost btn-sm" onclick="removeWatchlistModal('${f.id}')">Tirar da lista</button>`
+                : `<button class="btn btn-ghost btn-sm" onclick="addWatchlistModal('${f.id}')">+ Quero assistir</button>`
               )
           }
-          <button class="btn btn-primary btn-sm" onclick="registrarVisualizacaoModal(${f.id})">
+          <button class="btn btn-primary btn-sm" onclick="registrarVisualizacaoModal('${f.id}')">
             ${f.assistido ? '+ Visualização' : 'Marcar assistido'}
           </button>
         </div>

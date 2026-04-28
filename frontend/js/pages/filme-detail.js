@@ -27,21 +27,21 @@ async function openFilmeDetail(filmeId) {
             <div class="page-subtitle">${f.titulo_original || ''} · ${f.ano || ''} · ${formatMinutes(f.duracao_min)}</div>
             <div style="margin-top:16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
               ${f.assistido
-                ? `<button class="btn btn-secondary btn-sm" onclick="desmarcarAssistidoInline(${f.id})">
+                ? `<button class="btn btn-secondary btn-sm" onclick="desmarcarAssistidoInline('${f.id}')">
                     <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
                     Desmarcar assistido
                   </button>`
-                : `<button class="btn btn-primary btn-sm" onclick="openFilmeWatchModal(${f.id})">
+                : `<button class="btn btn-primary btn-sm" onclick="openFilmeWatchModal('${f.id}')">
                     <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
                     Marcar assistido
                   </button>`
               }
               ${f.na_watchlist
-                ? `<button class="btn btn-secondary btn-sm" onclick="removeWatchlistInline(${f.id})">
+                ? `<button class="btn btn-secondary btn-sm" onclick="removeWatchlistInline('${f.id}')">
                     Remover da lista
                   </button>`
                 : (!f.assistido
-                    ? `<button class="btn btn-ghost btn-sm" onclick="addWatchlistInline(${f.id})">
+                    ? `<button class="btn btn-ghost btn-sm" onclick="addWatchlistInline('${f.id}')">
                         + Quero assistir
                       </button>`
                     : '')
@@ -50,7 +50,7 @@ async function openFilmeDetail(filmeId) {
           </div>
           <div style="display:flex;gap:8px;align-items:flex-start;flex-direction:column">
             ${imgSrc ? `<img src="${imgSrc}" style="width:80px;border-radius:8px;box-shadow:0 4px 24px rgba(0,0,0,0.5)" onerror="this.style.display='none'">` : ''}
-            <button class="btn btn-danger btn-sm" onclick="confirmDeleteFilme(${f.id}, '${f.titulo.replace(/'/g,"\\'")}')">Remover</button>
+            <button class="btn btn-danger btn-sm" onclick="confirmDeleteFilme('${f.id}', '${f.titulo.replace(/'/g,"\\'")}')">Remover</button>
           </div>
         </div>
       </div>
@@ -61,11 +61,11 @@ async function openFilmeDetail(filmeId) {
         <div id="filme-plataformas-section-${filmeId}" style="margin-bottom:28px">
           <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
             <div class="section-title" style="margin-bottom:0">Plataformas</div>
-            <button class="btn btn-ghost btn-sm" id="sync-plat-btn-${filmeId}" onclick="syncFilmePlataformasInline(${filmeId})">
+            <button class="btn btn-ghost btn-sm" id="sync-plat-btn-${filmeId}" onclick="syncFilmePlataformasInline('${filmeId}')">
               <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:currentColor"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg>
               Sincronizar
             </button>
-            <button class="btn btn-ghost btn-sm" onclick="showAddPlataformaInline(${filmeId})">
+            <button class="btn btn-ghost btn-sm" onclick="showAddPlataformaInline('${filmeId}')">
               <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
               Adicionar
             </button>
@@ -86,7 +86,7 @@ async function openFilmeDetail(filmeId) {
                     ${d.plataforma_nome ? `<div style="font-size:11px;color:var(--text3)">${d.plataforma_nome}</div>` : ''}
                   </div>
                   <button class="btn-icon" style="opacity:0.4" title="Remover entrada"
-                    onclick="removerEntradaDiario(${filmeId}, ${d.id})">
+                    onclick="removerEntradaDiario('${filmeId}', '${d.id}')">
                     <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
                   </button>
                 </div>
@@ -96,7 +96,7 @@ async function openFilmeDetail(filmeId) {
         ` : ''}
 
         <div style="margin-top:28px">
-          <button class="btn btn-primary" onclick="openFilmeWatchModal(${filmeId})">
+          <button class="btn btn-primary" onclick="openFilmeWatchModal('${filmeId}')">
             <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
             Registrar mais uma visualização
           </button>
@@ -166,7 +166,7 @@ async function loadFilmePlataformasChips(filmeId) {
         }
         <span style="font-size:12px;color:var(--text2)">${p.nome}</span>
         <button class="btn-icon" style="padding:1px;margin-left:1px;opacity:0.5" title="Remover"
-          onclick="removeFilmePlataformaChip(${filmeId},'${p.id}',this)">
+          onclick="removeFilmePlataformaChip('${filmeId}','${p.id}',this)">
           <svg viewBox="0 0 24 24" style="width:11px;height:11px;fill:currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
         </button>
       </div>
@@ -220,7 +220,7 @@ async function syncFilmePlataformasInline(filmeId) {
       <div class="modal-footer">
         <button class="btn btn-secondary" onclick="modal.hide()">Cancelar</button>
         <button class="btn btn-primary" id="confirm-sync-btn-${filmeId}"
-          onclick="confirmSyncFilmePlataformas(${filmeId})">Sincronizar</button>
+          onclick="confirmSyncFilmePlataformas('${filmeId}')">Sincronizar</button>
       </div>
     `);
   } catch(e) {
@@ -281,7 +281,7 @@ async function showAddPlataformaInline(filmeId) {
         ${available.map(p => `<option value="${p.id}">${p.nome}</option>`).join('')}
       </select>
       <button class="btn btn-sm btn-primary" id="plat-add-btn-${filmeId}"
-        onclick="confirmAddPlataforma(${filmeId})">Adicionar</button>
+        onclick="confirmAddPlataforma('${filmeId}')">Adicionar</button>
       <button class="btn btn-sm btn-ghost"
         onclick="document.getElementById('filme-plat-add-${filmeId}')?.remove()">Cancelar</button>
     `;

@@ -63,9 +63,8 @@ function restoreFromHash() {
   if (pages[page]) {
     navigate(page, subPath);
     if (subPath) {
-      const id = parseInt(subPath);
-      if (page === 'filmes' && id) setTimeout(() => openFilmeDetail(id), 100);
-      if (page === 'projetos' && id) setTimeout(() => openProjetoDetail(id), 100);
+      if (page === 'filmes')   setTimeout(() => openFilmeDetail(subPath), 100);
+      if (page === 'projetos') setTimeout(() => openProjetoDetail(subPath), 100);
     }
   } else {
     navigate('dashboard');

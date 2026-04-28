@@ -38,7 +38,7 @@ function filmeCardHtml(f) {
   const dur = f.duracao_min ? ` · ${formatMinutes(f.duracao_min)}` : '';
 
   return `
-    <div class="series-card" data-filme-id="${f.id}" onclick="openFilmeModal(${f.id})">
+    <div class="series-card" data-filme-id="${f.id}" onclick="openFilmeModal('${f.id}')">
       <div class="series-poster">
         ${imgSrc
           ? `<img src="${imgSrc}" alt="${f.titulo}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=series-poster-placeholder>🎬</div>'">`
@@ -307,7 +307,7 @@ function confirmDeleteFilme(id, titulo) {
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="modal.hide()">Cancelar</button>
-      <button class="btn btn-danger" onclick="deleteFilme(${id})">Remover</button>
+      <button class="btn btn-danger" onclick="deleteFilme('${id}')">Remover</button>
     </div>
   `);
 }

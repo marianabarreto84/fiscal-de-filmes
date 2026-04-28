@@ -146,7 +146,7 @@ function filmeDiarioCardHtml(f) {
     : '';
 
   return `
-    <div class="diary-ep-card" onclick="openFilmeDetail(${f.filme_id})">
+    <div class="diary-ep-card" onclick="openFilmeDiarioModal('${f.diario_id}')">
       ${imgSrc
         ? `<img class="diary-ep-poster" src="${imgSrc}" alt="${f.filme_titulo}" onerror="this.classList.add('hidden');this.nextElementSibling.style.display='flex'">`
         : ''
@@ -165,4 +165,93 @@ function filmeDiarioCardHtml(f) {
       </div>
     </div>
   `;
+}
+
+// ── Modal de entrada do diário ───────────────────────────────────────────────
+
+async function openFilmeDiarioModal(diarioId) {
+  let entry = null;
+  let day = null;
+  for (const d of diarioDays) {
+    const found = (d.filmes || []).find(fl => fl.diario_id === diarioId);
+    if (found) { entry = found; day = d; break; }
+  }
+  if (!entry) { toast('Registro não encontrado.', 'error'); return; }
+
+  modal.show(`<div class="modal-body" style="padding:40px 28px;text-align:center">${loadingHtml()}</div>`);
+
+  let f;
+  try {
+    f = await api.getFilmeById(entry.filme_id);
+  } catch (e) {
+    modal.show(`<div class="modal-body" style="padding:32px 28px;color:var(--text3);font-size:13px">Erro ao carregar: ${e.message}</div>`);
+    return;
+  }
+
+  const imgSrc = f.poster_path ? posterPathUrl(f.poster_path) : null;
+  const metaParts = [];
+  if (f.titulo_original && f.titulo_original !== f.titulo) metaParts.push(f.titulo_original);
+  if (f.ano) metaParts.push(f.ano);
+  if (f.duracao_min) metaParts.push(formatMinutes(f.duracao_min));
+
+  const dataStr = `${String(day.dia).padStart(2,'0')} de ${monthFull(day.mes)} de ${day.ano}`;
+  const horaStr = entry.hora_assistido != null
+    ? `${String(entry.hora_assistido).padStart(2,'0')}:${String(entry.minuto_assistido ?? 0).padStart(2,'0')}`
+    : null;
+
+  modal.show(`
+    <div class="modal-header">
+      <div>
+        ${metaParts.length
+          ? `<div style="font-size:12px;color:var(--text3);margin-bottom:4px">${metaParts.join(' · ')}</div>`
+          : ''
+        }
+        <div class="modal-title" style="font-family:var(--font-display)">${f.titulo}</div>
+      </div>
+      <button class="btn-icon" onclick="modal.hide()">
+        <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      ${imgSrc || f.sinopse
+        ? `<div style="display:flex;gap:16px;margin-bottom:20px">
+             ${imgSrc
+               ? `<img src="${imgSrc}" alt="${f.titulo}" style="width:96px;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,0.4);flex-shrink:0;object-fit:cover;align-self:flex-start" onerror="this.style.display='none'">`
+               : ''
+             }
+             ${f.sinopse
+               ? `<div style="flex:1;min-width:0;font-size:12.5px;color:var(--text2);line-height:1.6">${f.sinopse}</div>`
+               : ''
+             }
+           </div>`
+        : ''
+      }
+
+      <div style="border-top:1px solid var(--border);padding-top:16px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+          <div>
+            <div style="font-size:11px;color:var(--text3);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.06em">Assistido em</div>
+            <div style="font-size:16px;font-weight:500;color:var(--accent)">${dataStr}${horaStr ? ' · ' + horaStr : ''}</div>
+            ${entry.plataforma_nome ? `<div style="font-size:12px;color:var(--text3);margin-top:4px">${entry.plataforma_nome}</div>` : ''}
+            ${entry.rewatch ? `<div style="font-size:11px;color:var(--accent);margin-top:4px">rewatch</div>` : ''}
+          </div>
+          <div style="display:flex;gap:8px;flex-shrink:0">
+            <button class="btn btn-secondary btn-sm" onclick="modal.hide(); openFilmeModal('${f.id}')">Ver filme</button>
+            <button class="btn btn-danger btn-sm" id="filme-diario-modal-delete">Remover</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `);
+
+  document.getElementById('filme-diario-modal-delete').onclick = async () => {
+    try {
+      await api.removerEntradaDiario(entry.filme_id, diarioId);
+      modal.hide();
+      toast('Registro removido.');
+      await renderDiario();
+    } catch (e) {
+      toast('Erro ao remover: ' + e.message, 'error');
+    }
+  };
 }
