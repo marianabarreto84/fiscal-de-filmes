@@ -1,4 +1,11 @@
-// ── Lista de filmes: duas seções — Quero Assistir e Assistidos ────────────────
+// ── Lista de filmes: três abas — Assistidos, Quero Assistir e Sem Categoria ───
+
+let activeFilmesTab = 'assistidos';
+
+function switchFilmesTab(tab) {
+  activeFilmesTab = tab;
+  renderFilmesGrid();
+}
 
 function classifyFilmes(filmes) {
   const watchlist     = filmes.filter(f => f.na_watchlist && !f.assistido);
@@ -116,11 +123,42 @@ function renderFilmesGrid() {
 
   const { watchlist, sem_categoria, assistidos } = classifyFilmes(list);
 
-  container.innerHTML = `
-    ${filmeSectionHtml('section-sem-categoria', 'Sem categoria',  sem_categoria, false)}
-    ${filmeSectionHtml('section-assistidos',    'Assistidos',     assistidos,    !q)}
-    ${filmeSectionHtml('section-watchlist',     'Quero Assistir', watchlist,     !q)}
+  const counts = {
+    assistidos:    assistidos.length,
+    watchlist:     watchlist.length,
+    sem_categoria: sem_categoria.length,
+  };
+
+  const tabsHtml = q ? '' : `
+    <div class="tabs">
+      <button class="tab-btn ${activeFilmesTab === 'assistidos' ? 'active' : ''}" onclick="switchFilmesTab('assistidos')">
+        Assistidos <span class="series-section-count">${counts.assistidos}</span>
+      </button>
+      <button class="tab-btn ${activeFilmesTab === 'watchlist' ? 'active' : ''}" onclick="switchFilmesTab('watchlist')">
+        Quero Assistir <span class="series-section-count">${counts.watchlist}</span>
+      </button>
+      <button class="tab-btn ${activeFilmesTab === 'sem_categoria' ? 'active' : ''}" onclick="switchFilmesTab('sem_categoria')">
+        Sem Categoria <span class="series-section-count">${counts.sem_categoria}</span>
+      </button>
+    </div>
   `;
+
+  let sectionsHtml;
+  if (q) {
+    sectionsHtml = `
+      ${filmeSectionHtml('section-sem-categoria', 'Sem categoria',  sem_categoria, false)}
+      ${filmeSectionHtml('section-assistidos',    'Assistidos',     assistidos,    false)}
+      ${filmeSectionHtml('section-watchlist',     'Quero Assistir', watchlist,     false)}
+    `;
+  } else if (activeFilmesTab === 'assistidos') {
+    sectionsHtml = filmeSectionHtml('section-assistidos', 'Assistidos', assistidos, true);
+  } else if (activeFilmesTab === 'watchlist') {
+    sectionsHtml = filmeSectionHtml('section-watchlist', 'Quero Assistir', watchlist, true);
+  } else {
+    sectionsHtml = filmeSectionHtml('section-sem-categoria', 'Sem categoria', sem_categoria, true);
+  }
+
+  container.innerHTML = tabsHtml + sectionsHtml;
 }
 
 async function showTmdbImportPrompt(tmdbId, container) {
